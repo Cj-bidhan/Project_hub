@@ -1,11 +1,72 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>{{ title or 'Mini Project' }}</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nepal Weather App</title>
+  <style>
+    body { background: #000; color: #0f0; font-family: monospace; padding: 1rem; }
+    h1 { text-align: center; }
+    form { text-align: center; margin-bottom: 1rem; }
+    .section { border: 1px solid #0f0; margin: 1rem 0; padding: 1rem; border-radius: 8px; }
+    canvas { max-width: 100%; }
+  </style>
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
-    <h1>{{ title or 'Welcome to this Mini Project!' }}</h1>
-    <p>This is a placeholder page for your Flask-based project.</p>
+  <h1>Weather in {{ city }}</h1>
+  <form method="post">
+    <input name="city" placeholder="City in Nepal" />
+    <button type="submit">Get Weather</button>
+  </form>
+  <div id="info" class="section"></div>
+  <div class="section">
+    <h2>Temperature (°C)</h2>
+    <canvas id="tempChart"></canvas>
+  </div>
+  <div class="section">
+    <h2>Humidity (%)</h2>
+    <canvas id="humChart"></canvas>
+  </div>
+  <div class="section">
+    <h2>Air Quality (AQI)</h2>
+    <canvas id="aqiChart"></canvas>
+  </div>
+
+  <script>
+    async function loadWeather() {
+      const city = '{{ city }}';
+      const res = await fetch(`/weather/api/weather?city=${city}`);
+      const json = await res.json();
+
+      // Display basic
+      document.getElementById('info').innerHTML = `
+        <p>Current: ${json.current.temp}°C, ${json.current.weather[0].description}</p>
+        <p>Wind: ${json.current.wind_speed} m/s, Pressure: ${json.current.pressure} hPa</p>
+      `;
+
+      // Temperature chart: historical + hourly
+      const temps = json.historical.map(h=>({ x: new Date(h.dt*1000), y: h.data.temp }))
+        .concat(json.hourly.slice(0, 24).map(h=>({ x: new Date(h.dt*1000), y: h.temp })));
+      new Chart(document.getElementById('tempChart'), {
+        type: 'line', data: { datasets: [{ label: 'Temp', data: temps, fill: false }] },
+        options: { scales: { x: { type: 'time', time: { unit: 'hour' }}}}
+      });
+
+      // Humidity chart: hourly
+      const hums = json.hourly.slice(0, 24).map(h=>({ x: new Date(h.dt*1000), y: h.humidity }));
+      new Chart(document.getElementById('humChart'), {
+        type: 'bar', data: { labels: hums.map(p=>p.x), datasets: [{ label: 'Humidity', data: hums.map(p=>p.y) }] },
+        options: { scales: { x: { type: 'time', time: { unit: 'hour' }}}}
+      });
+
+      // AQI chart: only current
+      new Chart(document.getElementById('aqiChart'), {
+        type: 'doughnut', data: { labels: ['AQI'], datasets: [{ data: [json.air_quality || 0] }] }
+      });
+    }
+    window.onload = loadWeather;
+  </script>
 </body>
 </html>
