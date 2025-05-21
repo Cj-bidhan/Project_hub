@@ -1,11 +1,131 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>{{ title or 'Mini Project' }}</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Server Monitor</title>
+
+  <!-- DataTables CSS -->
+  <link rel="stylesheet"
+    href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
+
+  <style>
+    body {
+      background-color: #000;
+      color: #0f0;
+      font-family: 'Courier New', Courier, monospace;
+      padding: 1rem;
+    }
+    h1 { text-align: center; margin-bottom: 1rem; }
+    .chart-container, .table-container {
+      background: #111;
+      border: 1px solid #0f0;
+      border-radius: 8px;
+      padding: 1rem;
+      margin: 1rem 0;
+    }
+    canvas { max-width: 100%; height: auto; display: block; margin: 0 auto; }
+    a.refresh {
+      display: block; text-align: center; margin-top: 1rem;
+      color: #0f0; cursor: pointer; text-decoration: none;
+    }
+    a.refresh:hover { text-decoration: underline; }
+  </style>
 </head>
 <body>
-    <h1>{{ title or 'Welcome to this Mini Project!' }}</h1>
-    <p>This is a placeholder page for your Flask-based project.</p>
+  <h1>🖥️ EC2 Server Monitor</h1>
+
+  <div class="chart-container">
+    <h2>CPU Usage by Core</h2>
+    <canvas id="cpuChart"></canvas>
+    <div id="cpuInfo" style="text-align:center; margin-top:.5rem;"></div>
+  </div>
+
+  <div class="chart-container">
+    <h2>Memory Usage</h2>
+    <canvas id="memChart"></canvas>
+    <div id="memInfo" style="text-align:center; margin-top:.5rem;"></div>
+  </div>
+
+  <div class="table-container">
+    <h2>Top Processes</h2>
+    <table id="procTable" class="display" style="width:100%">
+      <thead>
+        <tr>
+          <th>PID</th><th>Name</th><th>CPU %</th><th>Mem %</th><th>Threads</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+
+  <a class="refresh" onclick="updateDashboard()">🔄 Refresh Now</a>
+
+  <!-- Libraries -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <script>
+    let cpuChart, memChart, procTable;
+
+    async function updateDashboard() {
+      // 1) CPU data
+      const cpu = await fetch('/monitor/api/cpu').then(r=>r.json());
+      document.getElementById('cpuInfo').textContent =
+        `Total cores: ${cpu.count}, Threads: ${cpu.threads}`;
+
+      const ctx1 = document.getElementById('cpuChart').getContext('2d');
+      if (cpuChart) cpuChart.destroy();
+      cpuChart = new Chart(ctx1, {
+        type: 'bar',
+        data: {
+          labels: cpu.per_core.map((_,i)=>`Core ${i+1}`),
+          datasets: [{ label: 'Usage %', data: cpu.per_core }]
+        },
+        options: { animation: false }
+      });
+
+      // 2) Memory data
+      const mem = await fetch('/monitor/api/memory').then(r=>r.json());
+      document.getElementById('memInfo').textContent =
+        `Used: ${(mem.used/1e9).toFixed(2)} GB / ${(mem.total/1e9).toFixed(2)} GB (${mem.percent}%)`;
+
+      const ctx2 = document.getElementById('memChart').getContext('2d');
+      if (memChart) memChart.destroy();
+      memChart = new Chart(ctx2, {
+        type: 'doughnut',
+        data: {
+          labels: ['Used','Available'],
+          datasets: [{ data: [mem.used, mem.available] }]
+        },
+        options: { animation: false }
+      });
+
+      // 3) Processes table
+      const procs = await fetch('/monitor/api/processes').then(r=>r.json());
+      if (procTable) {
+        procTable.clear();
+        procTable.rows.add(procs);
+        procTable.draw();
+      } else {
+        procTable = $('#procTable').DataTable({
+          data: procs,
+          columns: [
+            { data: 'pid' }, { data: 'name' },
+            { data: 'cpu_percent' }, { data: 'memory_percent' },
+            { data: 'num_threads' }
+          ],
+          pageLength: 10,
+          destroy: true
+        });
+      }
+    }
+
+    window.onload = () => {
+      updateDashboard();
+      setInterval(updateDashboard, 10000);
+    };
+  </script>
 </body>
 </html>

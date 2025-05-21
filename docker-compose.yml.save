@@ -1,0 +1,43 @@
+# docker-compose.yml
+
+version: '3.8'
+
+services:
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./certs:/etc/nginx/    depends_on:
+      - landingpage
+      - uploader
+      - weather
+      - resume
+      - monitor
+
+  landingpage:
+    build: ./landing-page
+    expose:
+      - "5000"
+
+  uploader:
+    build: ./file-uploader
+    expose:
+      - "5003"
+
+  weather:
+    build: ./weather-app
+    expose:
+      - "5002"
+
+  resume:
+    build: ./resume-site
+    expose:
+      - "5001"
+
+  monitor:
+    build: ./server-monitor
+    expose:
+      - "5004"

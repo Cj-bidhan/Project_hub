@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DevOps Project Hub</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+</head>
+<body>
+  <div class="background">
+    <div class="overlay">
+      <h1 class="title">Welcome to My DevOps Project Hub</h1>
+      <p class="subtitle">Explore My Mini Projects</p>
+
+      <div class="portal">
+        <a href="/uploader/" class="tile">
+          <img src="{{ url_for('static', filename='projects/upload.svg') }}" alt="File Uploader" />
+          <span>File Uploader</span>
+        </a>
+        <a href="/weather/" class="tile">
+          <img src="{{ url_for('static', filename='projects/weather.svg') }}" alt="Weather App" />
+          <span>Weather App</span>
+        </a>
+        <a href="/resume/" class="tile">
+          <img src="{{ url_for('static', filename='projects/portfolio.svg') }}" alt="Portfolio" />
+          <span>Personal Resume</span>
+        </a>
+        <a href="/monitor/" class="tile">
+          <img src="{{ url_for('static', filename='projects/monitor.svg') }}" alt="Server Monitor" />
+          <span>Server Monitoring</span>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="clock-container">
+    <div class="analog-clock">
+      <div class="hand hour" id="hour-hand"></div>
+      <div class="hand minute" id="minute-hand"></div>
+      <div class="hand second" id="second-hand"></div>
+      <div class="center-dot"></div>
+    </div>
+    <div class="clock-datetime">
+      <div id="time-text"></div>
+      <div id="date-text"></div>
+    </div>
+  </div>
+
+  <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
