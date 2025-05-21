@@ -1,11 +1,122 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>{{ title or 'Mini Project' }}</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bidhan Ghimire - Resume</title>
+  <style>
+    /* Reset & Base */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Segoe UI', sans-serif; color: #333; background: #f7f7f7; line-height: 1.6; }
+    a { color: #0066cc; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    /* Layout */
+    .container { max-width: 900px; margin: 2rem auto; background: #fff; padding: 2rem; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+    .header { display: flex; align-items: center; margin-bottom: 1.5rem; }
+    .header img { width: 120px; height: 120px; border-radius: 50%; object-fit: cover; margin-right: 1.5rem; }
+    .header h1 { font-size: 2.5rem; margin-bottom: 0.25rem; }
+    .header p { font-size: 1rem; color: #666; }
+
+    /* Sections */
+    section { margin-bottom: 1.5rem; }
+    section h2 { font-size: 1.5rem; margin-bottom: 0.75rem; border-bottom: 2px solid #0066cc; display: inline-block; }
+    .two-column { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+
+    /* Lists */
+    ul { list-style: none; }
+    ul li { margin-bottom: 0.5rem; }
+
+    /* Responsive */
+    @media (max-width: 600px) {
+      .header { flex-direction: column; text-align: center; }
+      .header img { margin-bottom: 1rem; }
+      .two-column { grid-template-columns: 1fr; }
+    }
+  </style>
 </head>
 <body>
-    <h1>{{ title or 'Welcome to this Mini Project!' }}</h1>
-    <p>This is a placeholder page for your Flask-based project.</p>
+  <div class="container">
+    <div class="header">
+      <img src="{{ url_for('static', filename='profile.jpg') }}" alt="Profile Photo">
+      <div>
+        <h1>Bidhan Ghimire</h1>
+        <p>DevOps Enthusiast &amp; IT Professional</p>
+        <p>Gatthaghar Road, Thimi, Bhaktapur, Nepal | +977-9806632646 | <a href="mailto:bidhang99@gmail.com">bidhang99@gmail.com</a> | <a href="https://www.linkedin.com/in/bidhan-ghimire-a2aa11339/" target="_blank">LinkedIn</a></p>
+      </div>
+    </div>
+
+    <section>
+      <h2>Summary</h2>
+      <p>I’m a passionate DevOps enthusiast with hands-on experience in automation, cloud platforms, CI/CD pipelines, and infrastructure as code. With a solid foundation in Linux systems, networking, containerization (Docker), and tools like Ansible and Git, I enjoy building efficient, scalable solutions that bridge the gap between development and operations.</p>
+    </section>
+
+    <section>
+      <h2>Education</h2>
+      <ul>
+        <li><strong>BSc (Hons) Information Technology</strong>, International Institute of Management and Science (Affiliated to USCI, Malaysia)</li>
+        <li><strong>10+2 Science</strong>, Tops Higher Secondary School</li>
+        <li><strong>SLC</strong>, Tops Higher Secondary School</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Technical Skills</h2>
+      <ul class="two-column">
+        <li>Linux &amp; Networking</li>
+        <li>CI/CD (Jenkins, GitLab)</li>
+        <li>Docker &amp; Docker Compose</li>
+        <li>Nginx &amp; SSL (Let's Encrypt)</li>
+        <li>Terraform &amp; Ansible</li>
+        <li>Python &amp; Bash Scripting</li>
+        <li>Cloud (AWS, Azure)</li>
+        <li>Monitoring &amp; Logging</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Projects &amp; Experience</h2>
+      <ul>
+        <li><strong>CI/CD Pipeline with Jenkins &amp; GitLab:</strong> Set up Jenkins jobs for automated builds & deployments integrated with GitLab.</li>
+        <li><strong>Dockerized Web Apps:</strong> Built containerized apps, configured networks & volumes, used Docker Compose.</li>
+        <li><strong>Nginx Hosting:</strong> Implemented reverse proxies, SSL with Let's Encrypt, managed Cloudflare DNS.</li>
+        <li><strong>Terraform &amp; Ansible:</strong> Wrote IaC for cloud provisioning & used Ansible for configuration management.</li>
+        <li><strong>Azure Cloud Infrastructure:</strong> Managed VMs, networking, storage, and security best practices.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Professional Experience</h2>
+      <ul>
+        <li><strong>Supervisor / Acting Dept. Head</strong>, Royal Multipurpose Cooperative Ltd. – Led IT operations, oversaw workflows, handled technical queries.</li>
+        <li><strong>Computer Science Teacher</strong>, South Western State College – Delivered practical & theoretical CS instruction.</li>
+        <li><strong>QA Intern</strong>, Kantipur Media Group – Performed mobile app testing and debugging with Java &amp; Django.</li>
+        <li><strong>Content Writer</strong>, Top Nepal International – Created SEO-optimized sports &amp; entertainment content.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Certifications &amp; Activities</h2>
+      <ul>
+        <li>Professional DevOps Training Certification</li>
+        <li>Open-source contributions on GitHub</li>
+        <li>Built & deployed personal applications using DevOps best practices</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Soft Skills</h2>
+      <ul class="two-column">
+        <li>Adaptability</li>
+        <li>Time Management</li>
+        <li>Communication</li>
+        <li>Leadership</li>
+        <li>Problem Solving</li>
+        <li>Team Collaboration</li>
+        <li>Customer Service</li>
+      </ul>
+    </section>
+
+  </div>
 </body>
 </html>
